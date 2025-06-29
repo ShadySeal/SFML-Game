@@ -22,11 +22,10 @@ void GameState::update(const float& deltaTime)
 {
 	this->updateKeybinds(deltaTime);
 
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A))
-		std::cout << "A" << "\n";
+	this->player.update(deltaTime);
 }
 
 void GameState::render(sf::RenderTarget* target)
 {
-
+	this->player.render(this->window);
 }

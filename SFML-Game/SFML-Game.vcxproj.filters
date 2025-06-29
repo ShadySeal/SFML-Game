@@ -19,6 +19,12 @@
     <Filter Include="Source Files\States">
       <UniqueIdentifier>{0e98ad32-4bf7-4a23-a66c-0ba8f9d68dc8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Entities">
+      <UniqueIdentifier>{d7c8d9c7-730d-482e-8477-b3003a047404}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Entities">
+      <UniqueIdentifier>{b39b035e-cc9e-40f6-932c-39278cf7749e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -33,6 +39,9 @@
     <ClCompile Include="state.cpp">
       <Filter>Source Files\States</Filter>
     </ClCompile>
+    <ClCompile Include="entity.cpp">
+      <Filter>Source Files\Entities</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game.h">
@@ -43,6 +52,9 @@
     </ClInclude>
     <ClInclude Include="game_state.h">
       <Filter>Header Files\States</Filter>
+    </ClInclude>
+    <ClInclude Include="entity.h">
+      <Filter>Header Files\Entities</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
