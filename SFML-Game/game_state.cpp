@@ -2,10 +2,19 @@
 
 GameState::GameState(sf::RenderWindow* window) : State(window)
 {
+	this->initTextures();
+	this->player = new Player(100, 100, &this->textures["PLAYER_IDLE"]);
 }
 
 GameState::~GameState()
 {
+}
+
+void GameState::initTextures()
+{
+	sf::Texture temp;
+	temp.loadFromFile("smiley.png");
+	this->textures["PLAYER_IDLE"] = temp;
 }
 
 void GameState::endState()
@@ -22,10 +31,13 @@ void GameState::update(const float& deltaTime)
 {
 	this->updateKeybinds(deltaTime);
 
-	this->player.update(deltaTime);
+	this->player->update(deltaTime);
 }
 
 void GameState::render(sf::RenderTarget* target)
 {
-	this->player.render(this->window);
+	if (!target)
+		target = this->window;
+
+	this->player->render(target);
 }

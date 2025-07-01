@@ -6,7 +6,7 @@ class State
 {
 protected:
 	sf::RenderWindow* window;
-	std::vector<sf::Texture> textures;
+	std::map<std::string, sf::Texture> textures;
 	bool quit;
 
 public:
