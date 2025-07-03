@@ -5,7 +5,7 @@
 // Initializer functions
 void Game::initWindow()
 {
-	this->window = new sf::RenderWindow(sf::VideoMode({ 640, 360 }), "SFML Game");
+	this->window = new sf::RenderWindow(sf::VideoMode({ 1920, 1080 }), "SFML Game");
 }
 
 void Game::initStates()
@@ -17,8 +17,7 @@ void Game::initStates()
 Game::Game()
 {
     this->initWindow();
-    this->initStates();
-}
+    this->initStates();}
 
 Game::~Game()
 {
@@ -80,6 +79,7 @@ void Game::update()
 void Game::render()
 {
     this->window->clear(sf::Color::Blue);
+    //this->window->setMouseCursorVisible(false);
 
     // Render items
     if (!this->states.empty())

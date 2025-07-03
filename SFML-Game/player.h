@@ -25,5 +25,6 @@ public:
 	virtual ~Player();
 
 	// Functions
+	sf::Vector2f getPosition() const;
 	void update(const float& deltaTime);
 };

@@ -65,6 +65,11 @@ PlayerState Player::getMovementStateFromVector(const sf::Vector2f& dir)
 	return lastDirection;
 }
 
+sf::Vector2f Player::getPosition() const
+{
+	return this->sprite->getPosition();
+}
+
 void Player::update(const float& deltaTime)
 {
 	sf::Vector2f direction(0.f, 0.f);

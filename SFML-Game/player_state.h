@@ -10,4 +10,3 @@ enum class PlayerState
 	RUN_LEFT,
 	RUN_RIGHT
 };
-

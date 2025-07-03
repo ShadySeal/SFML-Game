@@ -14,6 +14,7 @@ Entity::~Entity()
 
 void Entity::move(const float& deltaTime, const sf::Vector2f direction)
 {
+
 	this->sprite->move(direction * deltaTime * this->movementSpeed);
 }
 
@@ -41,5 +42,4 @@ void Entity::render(sf::RenderTarget* target)
 	{
 		target->draw(*this->sprite);
 	}
-	
 }

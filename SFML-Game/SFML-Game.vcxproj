@@ -146,6 +146,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="player.cpp" />
     <ClCompile Include="state.cpp" />
+    <ClCompile Include="tile_map.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="animation.h" />
@@ -155,6 +156,7 @@
     <ClInclude Include="player.h" />
     <ClInclude Include="player_state.h" />
     <ClInclude Include="state.h" />
+    <ClInclude Include="tile_map.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

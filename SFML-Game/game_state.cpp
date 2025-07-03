@@ -3,7 +3,10 @@
 GameState::GameState(sf::RenderWindow* window) : State(window)
 {
 	this->initTextures();
-	this->player = new Player(100, 100, &this->textures["PLAYER_IDLE"]);
+	this->player = new Player(0, 0, &this->textures["PLAYER_IDLE"]);
+	this->tileMap = new TileMap();
+
+	this->cameraView = new sf::View(sf::FloatRect({ 0, 0 }, { 640, 360 }));
 }
 
 GameState::~GameState()
@@ -40,5 +43,9 @@ void GameState::render(sf::RenderTarget* target)
 	if (!target)
 		target = this->window;
 
+	this->tileMap->render(target);
 	this->player->render(target);
+
+	cameraView->setCenter(player->getPosition());
+	target->setView(*cameraView);
 }
