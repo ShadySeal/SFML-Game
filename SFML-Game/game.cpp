@@ -5,7 +5,7 @@
 // Initializer functions
 void Game::initWindow()
 {
-	this->window = new sf::RenderWindow(sf::VideoMode({ 800, 600 }), "SFML Game");
+	this->window = new sf::RenderWindow(sf::VideoMode({ 640, 360 }), "SFML Game");
 }
 
 void Game::initStates()
@@ -79,18 +79,18 @@ void Game::update()
 
 void Game::render()
 {
-    this->window->clear();
+    this->window->clear(sf::Color::Blue);
 
     // Render items
     if (!this->states.empty())
-        this->states.top()->render();
+        this->states.top()->render(this->window);
 
     this->window->display();
 }
 
 void Game::run()
 {
-    // run the program as long as the window is open
+    // Run the program as long as the window is open
     while (this->window->isOpen())
     {
         this->updateDeltaTime();

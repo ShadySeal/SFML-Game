@@ -9,11 +9,12 @@ Entity::Entity()
 
 Entity::~Entity()
 {
+	delete this->sprite;
 }
 
-void Entity::move(const float& deltaTime, const float dirX, const float dirY)
+void Entity::move(const float& deltaTime, const sf::Vector2f direction)
 {
-	this->sprite->move({ dirX * this->movementSpeed * deltaTime, dirY * this->movementSpeed * deltaTime });
+	this->sprite->move(direction * deltaTime * this->movementSpeed);
 }
 
 void Entity::createSprite(sf::Texture* texture)

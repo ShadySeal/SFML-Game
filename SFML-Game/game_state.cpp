@@ -8,12 +8,13 @@ GameState::GameState(sf::RenderWindow* window) : State(window)
 
 GameState::~GameState()
 {
+	delete this->player;
 }
 
 void GameState::initTextures()
 {
 	sf::Texture temp;
-	temp.loadFromFile("smiley.png");
+	temp.loadFromFile("resources/images/sprites/player/adventurer_sprite_sheet.png");
 	this->textures["PLAYER_IDLE"] = temp;
 }
 

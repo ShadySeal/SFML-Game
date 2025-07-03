@@ -1,0 +1,13 @@
+#pragma once
+enum class PlayerState
+{
+	IDLE_DOWN,
+	IDLE_UP,
+	IDLE_LEFT,
+	IDLE_RIGHT,
+	RUN_DOWN,
+	RUN_UP,
+	RUN_LEFT,
+	RUN_RIGHT
+};
+

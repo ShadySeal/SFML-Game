@@ -24,7 +24,7 @@ public:
 	virtual ~Entity();
 
 	// Functions
-	virtual void move(const float& deltaTime, const float dirX, const float dirY);
+	virtual void move(const float& deltaTime, const sf::Vector2f direction);
 	virtual void createSprite(sf::Texture* texture);
 	virtual void setPosition(const float x, const float y);
 	virtual void update(const float& deltaTime);
