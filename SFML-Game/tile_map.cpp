@@ -8,6 +8,10 @@ TileMap::~TileMap()
 {
 }
 
+void TileMap::initTileMap()
+{
+}
+
 void TileMap::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
     // apply the transform

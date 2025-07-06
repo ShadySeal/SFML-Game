@@ -8,6 +8,7 @@ private:
 	sf::VertexArray m_vertices;
 	sf::Texture     m_tileset;
 
+	void initTileMap();
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
 public:

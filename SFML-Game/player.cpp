@@ -3,10 +3,14 @@
 Player::Player(float x, float y, sf::Texture* texture)
 {
 	this->createSprite(texture);
-	this->setPosition(x, y);
 	this->initAnimation();
+	sprite->setOrigin(sprite->getLocalBounds().getCenter());
+	this->setPosition(x, y);
+	this->initBoundingBox();
 
 	this->movementSpeed = 200.f;
+
+	
 }
 
 Player::~Player()
@@ -14,10 +18,17 @@ Player::~Player()
 	delete this->animation;
 }
 
+void Player::initBoundingBox()
+{
+	//boundingBox = 
+}
+
 // Initializes animation frames and maps player states to animation rows
 void Player::initAnimation()
 {
 	this->animation = new Animation(this->texture, sf::Vector2u(8, 8), 0.1f);
+
+	sprite->setTextureRect(animation->textureRect);
 
 	animationRowMap = {
 		{PlayerState::IDLE_DOWN, 0},
@@ -68,6 +79,13 @@ PlayerState Player::getMovementStateFromVector(const sf::Vector2f& dir)
 sf::Vector2f Player::getPosition() const
 {
 	return this->sprite->getPosition();
+}
+
+sf::FloatRect Player::getBoundingBox() const
+{
+	sf::Vector2f center = sprite->getGlobalBounds().getCenter();
+	sf::FloatRect box({ center.x - 19.f / 2.f, center.y - 34.f / 2.f, }, { 19.f, 34.f });
+	return box;
 }
 
 void Player::update(const float& deltaTime)

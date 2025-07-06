@@ -48,4 +48,29 @@ void GameState::render(sf::RenderTarget* target)
 
 	cameraView->setCenter(player->getPosition());
 	target->setView(*cameraView);
+
+	sf::FloatRect box = player->getBoundingBox();
+	sf::RectangleShape debugBox;
+	debugBox.setPosition({ box.position.x, box.position.y });
+	debugBox.setSize({ box.size.x, box.size.y });
+	debugBox.setFillColor(sf::Color::Transparent);
+	debugBox.setOutlineColor(sf::Color::Red);
+	debugBox.setOutlineThickness(1.f);
+
+	target->draw(debugBox);
+
+	sf::FloatRect otherBox = sf::FloatRect({40.f, 40.f}, {20.f, 20.f});
+	sf::RectangleShape otherDebugBox;
+	otherDebugBox.setPosition({ otherBox.position.x, otherBox.position.y });
+	otherDebugBox.setSize({ otherBox.size.x, otherBox.size.y });
+	otherDebugBox.setFillColor(sf::Color::Transparent);
+	otherDebugBox.setOutlineColor(sf::Color::Red);
+	otherDebugBox.setOutlineThickness(1.f);
+
+	target->draw(otherDebugBox);
+
+	if (const std::optional intersection = box.findIntersection(otherBox))
+	{
+		std::cout << "Intersection at: (" << intersection->position.x << ", " << intersection->position.y << ")" << "\n";
+	}
 }
