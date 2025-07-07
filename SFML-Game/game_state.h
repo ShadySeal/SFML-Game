@@ -2,13 +2,13 @@
 
 #include "state.h"
 #include "player.h"
-#include "tile_map.h"
+#include "Level.h"
 
 class GameState : public State
 {
 private:
 	Player* player;
-	TileMap* tileMap;
+	Level* level;
 	sf::View* cameraView;
 
 	void initTextures();

@@ -1,16 +1,15 @@
 #include "player.h"
 
-Player::Player(float x, float y, sf::Texture* texture)
+Player::Player(float x, float y, sf::Texture* texture, const sf::Vector2f& boxSize)
 {
 	this->createSprite(texture);
 	this->initAnimation();
 	sprite->setOrigin(sprite->getLocalBounds().getCenter());
 	this->setPosition(x, y);
-	this->initBoundingBox();
+	//this->initBoundingBox();
 
 	this->movementSpeed = 200.f;
-
-	
+	this->boxSize = boxSize;
 }
 
 Player::~Player()
@@ -20,7 +19,8 @@ Player::~Player()
 
 void Player::initBoundingBox()
 {
-	//boundingBox = 
+	/*sf::Vector2f center = sprite->getGlobalBounds().getCenter();
+	boundingBox = new BoundingBox(sf::FloatRect({ center.x - 19.f / 2.f, center.y - 33.f / 2.f, }, { 19.f, 33.f }));*/
 }
 
 // Initializes animation frames and maps player states to animation rows
@@ -68,7 +68,7 @@ PlayerState Player::getMovementStateFromVector(const sf::Vector2f& dir)
 	{
 		lastDirection = dir.x > 0 ? PlayerState::RUN_RIGHT : PlayerState::RUN_LEFT;
 	}
-	else
+	else if (std::abs(dir.x) < std::abs(dir.y))
 	{
 		lastDirection = dir.y > 0 ? PlayerState::RUN_DOWN : PlayerState::RUN_UP;
 	}
@@ -84,7 +84,7 @@ sf::Vector2f Player::getPosition() const
 sf::FloatRect Player::getBoundingBox() const
 {
 	sf::Vector2f center = sprite->getGlobalBounds().getCenter();
-	sf::FloatRect box({ center.x - 19.f / 2.f, center.y - 34.f / 2.f, }, { 19.f, 34.f });
+	sf::FloatRect box({ center.x - boxSize.x / 2.f, center.y - boxSize.y / 2.f, }, { boxSize.x, boxSize.y });
 	return box;
 }
 

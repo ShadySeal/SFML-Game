@@ -3,8 +3,8 @@
 GameState::GameState(sf::RenderWindow* window) : State(window)
 {
 	this->initTextures();
-	this->player = new Player(0, 0, &this->textures["PLAYER_IDLE"]);
-	this->tileMap = new TileMap();
+	this->player = new Player(200, 100, &this->textures["PLAYER_IDLE"], sf::Vector2f({ 19.f, 33.f }));
+	this->level = new Level();
 
 	this->cameraView = new sf::View(sf::FloatRect({ 0, 0 }, { 640, 360 }));
 }
@@ -43,7 +43,7 @@ void GameState::render(sf::RenderTarget* target)
 	if (!target)
 		target = this->window;
 
-	this->tileMap->render(target);
+	this->level->render(target);
 	this->player->render(target);
 
 	cameraView->setCenter(player->getPosition());
@@ -59,18 +59,20 @@ void GameState::render(sf::RenderTarget* target)
 
 	target->draw(debugBox);
 
-	sf::FloatRect otherBox = sf::FloatRect({40.f, 40.f}, {20.f, 20.f});
-	sf::RectangleShape otherDebugBox;
-	otherDebugBox.setPosition({ otherBox.position.x, otherBox.position.y });
-	otherDebugBox.setSize({ otherBox.size.x, otherBox.size.y });
-	otherDebugBox.setFillColor(sf::Color::Transparent);
-	otherDebugBox.setOutlineColor(sf::Color::Red);
-	otherDebugBox.setOutlineThickness(1.f);
-
-	target->draw(otherDebugBox);
-
-	if (const std::optional intersection = box.findIntersection(otherBox))
+	for (const auto& otherBox : level->tileMap->boundingBoxes)
 	{
-		std::cout << "Intersection at: (" << intersection->position.x << ", " << intersection->position.y << ")" << "\n";
+		sf::RectangleShape otherDebugBox;
+		otherDebugBox.setPosition({ otherBox.position.x, otherBox.position.y });
+		otherDebugBox.setSize({ otherBox.size.x, otherBox.size.y });
+		otherDebugBox.setFillColor(sf::Color::Transparent);
+		otherDebugBox.setOutlineColor(sf::Color::Red);
+		otherDebugBox.setOutlineThickness(1.f);
+
+		target->draw(otherDebugBox);
+
+		if (const auto intersection = box.findIntersection(otherBox))
+		{
+			std::cout << "Collision happened!" << "\n";
+		}
 	}
 }

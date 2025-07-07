@@ -8,10 +8,6 @@ TileMap::~TileMap()
 {
 }
 
-void TileMap::initTileMap()
-{
-}
-
 void TileMap::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
     // apply the transform
@@ -24,7 +20,7 @@ void TileMap::draw(sf::RenderTarget& target, sf::RenderStates states) const
     target.draw(m_vertices, states);
 }
 
-bool TileMap::load(const std::filesystem::path& tileset, sf::Vector2u tileSize, const int* tiles, unsigned int width, unsigned int height)
+bool TileMap::load(const std::filesystem::path& tileset, sf::Vector2u tileSize, const int* tiles, unsigned int width, unsigned int height, const std::unordered_set<int>& collisionTiles)
 {
     // load the tileset texture
     if (!m_tileset.loadFromFile(tileset))
@@ -64,36 +60,15 @@ bool TileMap::load(const std::filesystem::path& tileset, sf::Vector2u tileSize, 
             triangles[3].texCoords = sf::Vector2f(tu * tileSize.x, (tv + 1) * tileSize.y);
             triangles[4].texCoords = sf::Vector2f((tu + 1) * tileSize.x, tv * tileSize.y);
             triangles[5].texCoords = sf::Vector2f((tu + 1) * tileSize.x, (tv + 1) * tileSize.y);
+
+            if (collisionTiles.count(tileNumber) > 0)
+            {
+                sf::Vector2f position(i * tileSize.x, j * tileSize.y);
+                sf::Vector2f size(tileSize.x, tileSize.y);
+                boundingBoxes.push_back(sf::FloatRect(position, size));
+            }
         }
     }
 
     return true;
-}
-
-void TileMap::render(sf::RenderTarget* target)
-{
-    // define the level with an array of tile indices
-    constexpr std::array level = {
-        0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-        0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0,
-        1, 1, 0, 0, 0, 0, 0, 0, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
-        0, 1, 0, 0, 2, 0, 3, 3, 3, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0,
-        0, 1, 1, 0, 3, 3, 3, 0, 0, 0, 1, 1, 1, 2, 0, 0, 0, 0, 0, 0,
-        0, 0, 1, 0, 3, 0, 2, 2, 0, 0, 1, 1, 1, 1, 2, 0, 0, 0, 0, 0,
-        2, 0, 1, 0, 3, 0, 2, 2, 2, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-        0, 0, 1, 0, 3, 2, 2, 2, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1,
-        0, 0, 1, 0, 3, 2, 2, 2, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1,
-        0, 0, 1, 0, 3, 2, 2, 2, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1,
-        0, 0, 1, 0, 3, 2, 2, 2, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1,
-        0, 0, 1, 0, 3, 2, 2, 2, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1,
-    };
-
-    // create the tilemap from the level definition
-    TileMap map;
-    if (!map.load("tileset.png", { 32, 32 }, level.data(), 20, 12))
-    {
-        return;
-    }
-
-    target->draw(map);
 }
