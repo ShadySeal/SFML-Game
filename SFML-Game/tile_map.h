@@ -14,7 +14,5 @@ public:
 	TileMap();
 	virtual ~TileMap();
 
-	std::vector<sf::FloatRect> boundingBoxes;
-
 	bool load(const std::filesystem::path& tileset, sf::Vector2u tileSize, const int* tiles, unsigned int width, unsigned int height, const std::unordered_set<int>& collisionTiles);
 };

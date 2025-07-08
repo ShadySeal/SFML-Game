@@ -10,6 +10,8 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
 
+#include "collision_manager.h"
+
 class Entity
 {
 private:
@@ -27,6 +29,9 @@ public:
 	virtual void move(const float& deltaTime, const sf::Vector2f direction);
 	virtual void createSprite(sf::Texture* texture);
 	virtual void setPosition(const float x, const float y);
-	virtual void update(const float& deltaTime);
-	virtual void render(sf::RenderTarget* target);
+	virtual sf::Vector2f getPosition() const;
+	virtual sf::FloatRect getBoundingBox(const sf::Vector2f& boxSize) const;
+
+	virtual void update(const float& deltaTime) = 0;
+	virtual void render(sf::RenderTarget* target) = 0;
 };

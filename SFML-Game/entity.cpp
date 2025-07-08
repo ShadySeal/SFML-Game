@@ -32,14 +32,15 @@ void Entity::setPosition(const float x, const float y)
 	}
 }
 
-void Entity::update(const float& deltaTime)
+sf::Vector2f Entity::getPosition() const
 {
+	return this->sprite->getPosition();
 }
 
-void Entity::render(sf::RenderTarget* target)
+sf::FloatRect Entity::getBoundingBox(const sf::Vector2f& boxSize) const
 {
-	if (this->sprite)
-	{
-		target->draw(*this->sprite);
-	}
+	sf::Vector2f center = sprite->getGlobalBounds().getCenter();
+	sf::FloatRect box({ center.x - boxSize.x / 2.f, center.y - boxSize.y / 2.f, }, { boxSize.x, boxSize.y });
+	CollisionManager::getInstance().playerBox = box;
+	return box;
 }

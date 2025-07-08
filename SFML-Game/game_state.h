@@ -8,7 +8,6 @@ class GameState : public State
 {
 private:
 	Player* player;
-	Level* level;
 	sf::View* cameraView;
 
 	void initTextures();
@@ -16,6 +15,8 @@ private:
 public:
 	GameState(sf::RenderWindow* window);
 	virtual ~GameState();
+
+	Level* level;
 
 	// Functions
 	void endState();

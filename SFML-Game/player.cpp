@@ -6,7 +6,6 @@ Player::Player(float x, float y, sf::Texture* texture, const sf::Vector2f& boxSi
 	this->initAnimation();
 	sprite->setOrigin(sprite->getLocalBounds().getCenter());
 	this->setPosition(x, y);
-	//this->initBoundingBox();
 
 	this->movementSpeed = 200.f;
 	this->boxSize = boxSize;
@@ -15,12 +14,6 @@ Player::Player(float x, float y, sf::Texture* texture, const sf::Vector2f& boxSi
 Player::~Player()
 {
 	delete this->animation;
-}
-
-void Player::initBoundingBox()
-{
-	/*sf::Vector2f center = sprite->getGlobalBounds().getCenter();
-	boundingBox = new BoundingBox(sf::FloatRect({ center.x - 19.f / 2.f, center.y - 33.f / 2.f, }, { 19.f, 33.f }));*/
 }
 
 // Initializes animation frames and maps player states to animation rows
@@ -76,36 +69,37 @@ PlayerState Player::getMovementStateFromVector(const sf::Vector2f& dir)
 	return lastDirection;
 }
 
-sf::Vector2f Player::getPosition() const
+void Player::checkCollisions()
 {
-	return this->sprite->getPosition();
-}
+	sf::FloatRect playerBox = getBoundingBox(boxSize);
 
-sf::FloatRect Player::getBoundingBox() const
-{
-	sf::Vector2f center = sprite->getGlobalBounds().getCenter();
-	sf::FloatRect box({ center.x - boxSize.x / 2.f, center.y - boxSize.y / 2.f, }, { boxSize.x, boxSize.y });
-	return box;
+	for (const auto& tileBoxes : CollisionManager::getInstance().tileBoxes)
+	{
+		if (playerBox.findIntersection(tileBoxes))
+		{
+			sprite->setPosition(originalPos);
+		}
+	}
 }
 
 void Player::update(const float& deltaTime)
 {
+	originalPos = sprite->getPosition();
+
 	sf::Vector2f direction(0.f, 0.f);
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left))
-		direction.x -= 1.f;
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right))
-		direction.x += 1.f;
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Up))
-		direction.y -= 1.f;
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Down))
-		direction.y += 1.f;
+		direction.x = -1.f;
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right))
+		direction.x = 1.f;
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Up))
+		direction.y = -1.f;
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Down))
+		direction.y = 1.f;
 
 	// Normalize the movement vector to prevent faster diagonal movement
 	if (direction.x != 0.f || direction.y != 0.f)
 	{
-		float length = std::sqrt(direction.x * direction.x + direction.y * direction.y);
-		direction /= length;
 		this->move(deltaTime, direction);
 	}
 
@@ -118,5 +112,15 @@ void Player::update(const float& deltaTime)
 	{
 		animation->update(currentRow, deltaTime);
 		sprite->setTextureRect(animation->textureRect);
+	}
+
+	checkCollisions();
+}
+
+void Player::render(sf::RenderTarget* target)
+{
+	if (this->sprite)
+	{
+		target->draw(*this->sprite);
 	}
 }

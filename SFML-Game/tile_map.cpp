@@ -1,4 +1,5 @@
 #include "tile_map.h"
+#include "collision_manager.h"
 
 TileMap::TileMap()
 {
@@ -6,6 +7,7 @@ TileMap::TileMap()
 
 TileMap::~TileMap()
 {
+    CollisionManager::getInstance().tileBoxes.clear();
 }
 
 void TileMap::draw(sf::RenderTarget& target, sf::RenderStates states) const
@@ -65,7 +67,7 @@ bool TileMap::load(const std::filesystem::path& tileset, sf::Vector2u tileSize, 
             {
                 sf::Vector2f position(i * tileSize.x, j * tileSize.y);
                 sf::Vector2f size(tileSize.x, tileSize.y);
-                boundingBoxes.push_back(sf::FloatRect(position, size));
+                CollisionManager::getInstance().tileBoxes.push_back(sf::FloatRect(position, size));
             }
         }
     }

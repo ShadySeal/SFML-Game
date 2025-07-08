@@ -12,6 +12,8 @@ GameState::GameState(sf::RenderWindow* window) : State(window)
 GameState::~GameState()
 {
 	delete this->player;
+	delete this->level;
+	delete this->cameraView;
 }
 
 void GameState::initTextures()
@@ -49,30 +51,5 @@ void GameState::render(sf::RenderTarget* target)
 	cameraView->setCenter(player->getPosition());
 	target->setView(*cameraView);
 
-	sf::FloatRect box = player->getBoundingBox();
-	sf::RectangleShape debugBox;
-	debugBox.setPosition({ box.position.x, box.position.y });
-	debugBox.setSize({ box.size.x, box.size.y });
-	debugBox.setFillColor(sf::Color::Transparent);
-	debugBox.setOutlineColor(sf::Color::Red);
-	debugBox.setOutlineThickness(1.f);
-
-	target->draw(debugBox);
-
-	for (const auto& otherBox : level->tileMap->boundingBoxes)
-	{
-		sf::RectangleShape otherDebugBox;
-		otherDebugBox.setPosition({ otherBox.position.x, otherBox.position.y });
-		otherDebugBox.setSize({ otherBox.size.x, otherBox.size.y });
-		otherDebugBox.setFillColor(sf::Color::Transparent);
-		otherDebugBox.setOutlineColor(sf::Color::Red);
-		otherDebugBox.setOutlineThickness(1.f);
-
-		target->draw(otherDebugBox);
-
-		if (const auto intersection = box.findIntersection(otherBox))
-		{
-			std::cout << "Collision happened!" << "\n";
-		}
-	}
+	CollisionManager::getInstance().drawBoxes(target, false);
 }
