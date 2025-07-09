@@ -10,7 +10,9 @@ class Player : public Entity
 {
 private:
 	// Variables
-	Animation* animation;
+	Animation* idleAnim;
+	Animation* walkAnim;
+	std::map<std::string, Animation> animations;
 	int currentRow;
 	std::unordered_map<PlayerState, unsigned int> animationRowMap;
 	PlayerState currentState;
@@ -23,8 +25,10 @@ private:
 
 	// Functions
 	void initAnimation();
-	PlayerState getMovementStateFromVector(const sf::Vector2f& dir);
+	PlayerState getMovementState(const sf::Vector2f& dir);
 	void checkCollisions();
+	sf::Vector2f getInputDirection() const;
+	int getIdleColumn() const;
 
 public:
 	Player(float x, float y, sf::Texture* texture, const sf::Vector2f& boxSize);

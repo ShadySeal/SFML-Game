@@ -31,6 +31,7 @@ public:
 	virtual void setPosition(const float x, const float y);
 	virtual sf::Vector2f getPosition() const;
 	virtual sf::FloatRect getBoundingBox(const sf::Vector2f& boxSize) const;
+	virtual void setSpriteFromSheet(sf::Vector2u gridSize, sf::Vector2u currentFrame);
 
 	virtual void update(const float& deltaTime) = 0;
 	virtual void render(sf::RenderTarget* target) = 0;

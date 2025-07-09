@@ -3,10 +3,10 @@
 GameState::GameState(sf::RenderWindow* window) : State(window)
 {
 	this->initTextures();
-	this->player = new Player(200, 100, &this->textures["PLAYER_IDLE"], sf::Vector2f({ 19.f, 33.f }));
+	this->player = new Player(200, 100, &this->textures["PLAYER_IDLE"], sf::Vector2f({ 12.f, 16.f }));
 	this->level = new Level();
 
-	this->cameraView = new sf::View(sf::FloatRect({ 0, 0 }, { 640, 360 }));
+	this->cameraView = new sf::View(sf::FloatRect({ 0, 0 }, { 320, 240 }));
 }
 
 GameState::~GameState()
@@ -19,7 +19,7 @@ GameState::~GameState()
 void GameState::initTextures()
 {
 	sf::Texture temp;
-	temp.loadFromFile("resources/images/sprites/player/adventurer_sprite_sheet.png");
+	temp.loadFromFile("resources/images/sprites/player/alpo_sprite_sheet.png");
 	this->textures["PLAYER_IDLE"] = temp;
 }
 

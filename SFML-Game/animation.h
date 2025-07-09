@@ -18,5 +18,6 @@ public:
 	sf::IntRect textureRect;
 	
 	void update(int row, const float& deltaTime);
+	void reset();
 };
 

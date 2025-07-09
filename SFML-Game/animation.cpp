@@ -34,3 +34,10 @@ void Animation::update(int row, const float& deltaTime)
 	textureRect.position.x = currentFrame.x * textureRect.size.x;
 	textureRect.position.y = currentFrame.y * textureRect.size.y;
 }
+
+void Animation::reset()
+{
+	currentFrame.x = 0;
+	totalTime = 0.f;
+	textureRect.position.x = 0;
+}

@@ -7,36 +7,59 @@ Player::Player(float x, float y, sf::Texture* texture, const sf::Vector2f& boxSi
 	sprite->setOrigin(sprite->getLocalBounds().getCenter());
 	this->setPosition(x, y);
 
-	this->movementSpeed = 200.f;
+	this->movementSpeed = 100.f;
 	this->boxSize = boxSize;
 }
 
 Player::~Player()
 {
-	delete this->animation;
+	delete this->walkAnim;
 }
 
 // Initializes animation frames and maps player states to animation rows
 void Player::initAnimation()
 {
-	this->animation = new Animation(this->texture, sf::Vector2u(8, 8), 0.1f);
+	this->walkAnim = new Animation(this->texture, sf::Vector2u(4, 5), 0.2f);
 
-	sprite->setTextureRect(animation->textureRect);
+	sprite->setTextureRect(walkAnim->textureRect);
 
 	animationRowMap = {
 		{PlayerState::IDLE_DOWN, 0},
-		{PlayerState::IDLE_RIGHT, 1},
-		{PlayerState::IDLE_LEFT, 2},
-		{PlayerState::IDLE_UP, 3},
-		{PlayerState::RUN_DOWN, 4},
-		{PlayerState::RUN_RIGHT, 5},
-		{PlayerState::RUN_LEFT, 6},
-		{PlayerState::RUN_UP, 7}
+		{PlayerState::IDLE_RIGHT, 0},
+		{PlayerState::IDLE_LEFT, 0},
+		{PlayerState::IDLE_UP, 0},
+		{PlayerState::RUN_DOWN, 1},
+		{PlayerState::RUN_RIGHT, 2},
+		{PlayerState::RUN_LEFT, 3},
+		{PlayerState::RUN_UP, 4}
 	};
 }
 
+void Player::checkCollisions()
+{
+	sf::FloatRect playerBox = getBoundingBox(boxSize);
+
+	for (const auto& tileBoxes : CollisionManager::getInstance().tileBoxes)
+	{
+		if (playerBox.findIntersection(tileBoxes))
+		{
+			sprite->setPosition(originalPos);
+		}
+	}
+}
+
+sf::Vector2f Player::getInputDirection() const
+{
+	sf::Vector2f dir(0.f, 0.f);
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left))  dir.x -= 1.f;
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right)) dir.x += 1.f;
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Up))    dir.y -= 1.f;
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Down))  dir.y += 1.f;
+	return dir;
+}
+
 // Determines the correct animation state based on movement direction
-PlayerState Player::getMovementStateFromVector(const sf::Vector2f& dir)
+PlayerState Player::getMovementState(const sf::Vector2f& dir)
 {
 	if (dir.x == 0 && dir.y == 0)
 	{
@@ -69,16 +92,15 @@ PlayerState Player::getMovementStateFromVector(const sf::Vector2f& dir)
 	return lastDirection;
 }
 
-void Player::checkCollisions()
+int Player::getIdleColumn() const
 {
-	sf::FloatRect playerBox = getBoundingBox(boxSize);
-
-	for (const auto& tileBoxes : CollisionManager::getInstance().tileBoxes)
+	switch (lastDirection)
 	{
-		if (playerBox.findIntersection(tileBoxes))
-		{
-			sprite->setPosition(originalPos);
-		}
+		case PlayerState::RUN_DOWN:  return 0;
+		case PlayerState::RUN_RIGHT: return 1;
+		case PlayerState::RUN_LEFT:  return 2;
+		case PlayerState::RUN_UP:    return 3;
+		default: return 0;
 	}
 }
 
@@ -86,32 +108,33 @@ void Player::update(const float& deltaTime)
 {
 	originalPos = sprite->getPosition();
 
-	sf::Vector2f direction(0.f, 0.f);
+	sf::Vector2f direction = getInputDirection();
 
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left))
-		direction.x = -1.f;
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right))
-		direction.x = 1.f;
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Up))
-		direction.y = -1.f;
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Down))
-		direction.y = 1.f;
-
-	// Normalize the movement vector to prevent faster diagonal movement
-	if (direction.x != 0.f || direction.y != 0.f)
+	// Handle movement
+	if (direction != sf::Vector2f(0.f, 0.f))
 	{
-		this->move(deltaTime, direction);
+		move(deltaTime, direction);
 	}
 
-	// Determine animation row based on movement direction
-	currentState = getMovementStateFromVector(direction);
+	// Determine current state and animation row
+	currentState = getMovementState(direction);
 	currentRow = animationRowMap[currentState];
 
-	// Update sprite texture based on current animation frame
-	if (animation && sprite)
+	// Update sprite animation
+	if (walkAnim && sprite)
 	{
-		animation->update(currentRow, deltaTime);
-		sprite->setTextureRect(animation->textureRect);
+		if (direction != sf::Vector2f(0.f, 0.f))
+		{
+			walkAnim->update(currentRow, deltaTime);
+			sprite->setTextureRect(walkAnim->textureRect);
+		}
+		else
+		{
+			walkAnim->reset();
+
+			int idleCol = getIdleColumn();
+			setSpriteFromSheet(sf::Vector2u(4, 5), sf::Vector2u(idleCol, 0)); // row 0 = idle
+		}
 	}
 
 	checkCollisions();

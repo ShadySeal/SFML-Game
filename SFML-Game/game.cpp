@@ -5,7 +5,7 @@
 // Initializer functions
 void Game::initWindow()
 {
-	this->window = new sf::RenderWindow(sf::VideoMode({ 1920, 1080 }), "SFML Game");
+	this->window = new sf::RenderWindow(sf::VideoMode({ 2048, 1536 }), "SFML Game");
 }
 
 void Game::initStates()
