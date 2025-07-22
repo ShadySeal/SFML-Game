@@ -45,17 +45,14 @@ sf::FloatRect Entity::getBoundingBox(const sf::Vector2f& boxSize) const
 	return box;
 }
 
-void Entity::setSpriteFromSheet(sf::Vector2u gridSize, sf::Vector2u currentFrame)
+void Entity::setSpriteFromSheet(sf::Vector2u frameSize, sf::Vector2u currentFrame)
 {
 	sf::IntRect textureRect;
 
-	unsigned int frameWidth = texture->getSize().x / gridSize.x;
-	unsigned int frameHeight = texture->getSize().y / gridSize.y;
+    textureRect.position.x = currentFrame.x * frameSize.x;
+    textureRect.position.y = currentFrame.y * frameSize.y;
+    textureRect.size.x = frameSize.x;
+    textureRect.size.y = frameSize.y;
 
-	textureRect.position.x = currentFrame.x * frameWidth;
-	textureRect.position.y = currentFrame.y * frameHeight;
-	textureRect.size.x = frameWidth;
-	textureRect.size.y = frameHeight;
-
-	sprite->setTextureRect(textureRect);
+    sprite->setTextureRect(textureRect);
 }

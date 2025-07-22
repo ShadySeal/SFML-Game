@@ -13,26 +13,26 @@ Player::Player(float x, float y, sf::Texture* texture, const sf::Vector2f& boxSi
 
 Player::~Player()
 {
-	delete this->walkAnim;
+	delete this->animation;
 }
 
 // Initializes animation frames and maps player states to animation rows
 void Player::initAnimation()
 {
-	this->walkAnim = new Animation(this->texture, sf::Vector2u(4, 5), 0.2f);
+	this->animation = new Animation(this->texture, sf::Vector2u(4, 7));
 
-	sprite->setTextureRect(walkAnim->textureRect);
+	sprite->setTextureRect(animation->textureRect);
 
 	animationRowMap = {
-		{PlayerState::IDLE_DOWN, 0},
-		{PlayerState::IDLE_RIGHT, 0},
-		{PlayerState::IDLE_LEFT, 0},
-		{PlayerState::IDLE_UP, 0},
 		{PlayerState::RUN_DOWN, 1},
-		{PlayerState::RUN_RIGHT, 2},
-		{PlayerState::RUN_LEFT, 3},
-		{PlayerState::RUN_UP, 4}
+		{PlayerState::RUN_LEFT, 2},
+		{PlayerState::RUN_UP, 3},
+		{PlayerState::RUN_RIGHT, 4},
+		{PlayerState::ATTACK_DOWN, 5},
+		{PlayerState::ATTACK_LEFT, 6}
 	};
+
+	attackSwitchTime = 0.3f;
 }
 
 void Player::checkCollisions()
@@ -51,31 +51,35 @@ void Player::checkCollisions()
 sf::Vector2f Player::getInputDirection() const
 {
 	sf::Vector2f dir(0.f, 0.f);
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left))  dir.x -= 1.f;
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right)) dir.x += 1.f;
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Up))    dir.y -= 1.f;
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Down))  dir.y += 1.f;
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left))
+		dir.x -= 1.f;
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right))
+		dir.x += 1.f;
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Up))
+		dir.y -= 1.f;
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Down))
+		dir.y += 1.f;
 	return dir;
 }
 
 // Determines the correct animation state based on movement direction
 PlayerState Player::getMovementState(const sf::Vector2f& dir)
 {
-	if (dir.x == 0 && dir.y == 0)
+	if (isAttacking)
 	{
-		// No movement: return idle state based on last movement direction
+		// Return attack state based on last movement direction
 		switch (lastDirection)
 		{
 		case PlayerState::RUN_UP:
-			return PlayerState::IDLE_UP;
+			return PlayerState::ATTACK_DOWN;
 		case PlayerState::RUN_DOWN:
-			return PlayerState::IDLE_DOWN;
+			return PlayerState::ATTACK_DOWN;
 		case PlayerState::RUN_LEFT:
-			return PlayerState::IDLE_LEFT;
+			return PlayerState::ATTACK_LEFT;
 		case PlayerState::RUN_RIGHT:
-			return PlayerState::IDLE_RIGHT;
+			return PlayerState::ATTACK_DOWN;
 		default:
-			return PlayerState::IDLE_DOWN;
+			return PlayerState::ATTACK_DOWN;
 		}
 	}
 
@@ -92,14 +96,15 @@ PlayerState Player::getMovementState(const sf::Vector2f& dir)
 	return lastDirection;
 }
 
+// Gets the correct idle frame from the first column of the sprite sheet based on the last direction
 int Player::getIdleColumn() const
 {
 	switch (lastDirection)
 	{
 		case PlayerState::RUN_DOWN:  return 0;
-		case PlayerState::RUN_RIGHT: return 1;
-		case PlayerState::RUN_LEFT:  return 2;
-		case PlayerState::RUN_UP:    return 3;
+		case PlayerState::RUN_LEFT:  return 1;
+		case PlayerState::RUN_UP:    return 2;
+		case PlayerState::RUN_RIGHT: return 3;
 		default: return 0;
 	}
 }
@@ -111,9 +116,14 @@ void Player::update(const float& deltaTime)
 	sf::Vector2f direction = getInputDirection();
 
 	// Handle movement
-	if (direction != sf::Vector2f(0.f, 0.f))
+	if (direction != sf::Vector2f(0.f, 0.f) && !isAttacking)
 	{
 		move(deltaTime, direction);
+	}
+
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Z) && !isAttacking)
+	{
+		isAttacking = true;
 	}
 
 	// Determine current state and animation row
@@ -121,19 +131,33 @@ void Player::update(const float& deltaTime)
 	currentRow = animationRowMap[currentState];
 
 	// Update sprite animation
-	if (walkAnim && sprite)
+	if (animation && sprite)
 	{
-		if (direction != sf::Vector2f(0.f, 0.f))
+		if (isAttacking)
 		{
-			walkAnim->update(currentRow, deltaTime);
-			sprite->setTextureRect(walkAnim->textureRect);
+			animation->update(currentRow, deltaTime, 0.1f);
+			sprite->setTextureRect(animation->textureRect);
+
+			attackTime += deltaTime;
+
+			if (attackTime >= attackSwitchTime)
+			{
+				attackTime = 0.f;
+				isAttacking = false;
+				animation->reset();
+			}
+		}
+		else if (direction != sf::Vector2f(0.f, 0.f))
+		{
+			animation->update(currentRow, deltaTime, 0.2f);
+			sprite->setTextureRect(animation->textureRect);
 		}
 		else
 		{
-			walkAnim->reset();
+			animation->reset();
 
 			int idleCol = getIdleColumn();
-			setSpriteFromSheet(sf::Vector2u(4, 5), sf::Vector2u(idleCol, 0)); // row 0 = idle
+			setSpriteFromSheet(sf::Vector2u(32, 32), sf::Vector2u(idleCol, 0)); // row 0 = idle
 		}
 	}
 

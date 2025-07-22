@@ -10,8 +10,7 @@ class Player : public Entity
 {
 private:
 	// Variables
-	Animation* idleAnim;
-	Animation* walkAnim;
+	Animation* animation;
 	std::map<std::string, Animation> animations;
 	int currentRow;
 	std::unordered_map<PlayerState, unsigned int> animationRowMap;
@@ -22,6 +21,10 @@ private:
 
 	sf::Vector2f originalPos;
 	sf::Keyboard::Key lastDirectionKey;
+
+	bool isAttacking = false;
+	float attackTime;
+	float attackSwitchTime;
 
 	// Functions
 	void initAnimation();

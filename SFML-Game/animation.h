@@ -9,15 +9,13 @@ private:
 	sf::Vector2u currentFrame;
 
 	float totalTime;
-	float switchTime;
 
 public:
-	Animation(sf::Texture* texture, sf::Vector2u frameCount, float switchTime);
+	Animation(sf::Texture* texture, sf::Vector2u frameCount);
 	virtual ~Animation();
 
 	sf::IntRect textureRect;
 	
-	void update(int row, const float& deltaTime);
+	void update(int row, const float& deltaTime, float switchTime);
 	void reset();
 };
-

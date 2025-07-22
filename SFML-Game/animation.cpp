@@ -1,9 +1,8 @@
 #include "Animation.h"
 
-Animation::Animation(sf::Texture* texture, sf::Vector2u frameCount, float switchTime)
+Animation::Animation(sf::Texture* texture, sf::Vector2u frameCount)
 {
 	this->frameCount = frameCount;
-	this->switchTime = switchTime;
 	this->totalTime = 0.f;
 	this->currentFrame.x = 0;
 
@@ -15,7 +14,7 @@ Animation::~Animation()
 {
 }
 
-void Animation::update(int row, const float& deltaTime)
+void Animation::update(int row, const float& deltaTime, float switchTime)
 {
 	currentFrame.y = row;
 	totalTime += deltaTime;

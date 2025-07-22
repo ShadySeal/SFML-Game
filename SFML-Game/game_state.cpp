@@ -51,5 +51,5 @@ void GameState::render(sf::RenderTarget* target)
 	cameraView->setCenter(player->getPosition());
 	target->setView(*cameraView);
 
-	CollisionManager::getInstance().drawBoxes(target, false);
+	CollisionManager::getInstance().drawBoxes(target, true);
 }

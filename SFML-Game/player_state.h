@@ -8,5 +8,7 @@ enum class PlayerState
 	RUN_DOWN,
 	RUN_UP,
 	RUN_LEFT,
-	RUN_RIGHT
+	RUN_RIGHT,
+	ATTACK_DOWN,
+	ATTACK_LEFT
 };
